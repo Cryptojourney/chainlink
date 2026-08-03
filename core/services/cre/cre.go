@@ -235,7 +235,7 @@ func (s *Services) newSubservices(
 
 	if cfg.CRE().Linking().URL() != "" {
 		lggr.Debugw("Creating OrgResolver")
-		inner, ierr := newOrgResolver(cfg, capCfg, opts, lggr)
+		inner, ierr := newOrgResolver(cfg, capCfg, opts, ds, lggr)
 		if ierr != nil {
 			return nil, fmt.Errorf("could not create org resolver: %w", ierr)
 		}
@@ -605,6 +605,7 @@ func newOrgResolver(
 	cfg Config,
 	capCfg config.Capabilities,
 	opts Opts,
+	ds sqlutil.DataSource,
 	lggr logger.Logger,
 ) (orgresolver.OrgResolver, error) {
 	var wrChainDetails chainselectors.ChainDetails
@@ -628,6 +629,10 @@ func newOrgResolver(
 		JWTGenerator:                  opts.JWTGenerator,
 		Client:                        opts.LinkingClient,
 		Meter:                         opts.Meter,
+		CacheEnabled:                  cfg.CRE().Linking().CacheEnabled(),
+	}
+	if cfg.CRE().Linking().CacheEnabled() {
+		orgResolverConfig.CacheStore = NewOrgResolverStore(ds)
 	}
 
 	resolver, err := orgResolverConfig.New(lggr)
