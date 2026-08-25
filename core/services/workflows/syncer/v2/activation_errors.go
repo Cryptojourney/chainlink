@@ -97,6 +97,9 @@ func isPermanentEngineInitError(err error) bool {
 			strings.Contains(msg, "failed to decode owner"),
 			strings.Contains(msg, "invalid cron schedule"),
 			strings.Contains(msg, "cron schedule must specify"),
+			// gocron's own wording, surfaced by the cron capability when it cannot
+			// parse a workflow's schedule. The substrings above never matched it.
+			strings.Contains(msg, "crontab parse failure"),
 			strings.Contains(msg, "interval exceeded"):
 			return true
 		}

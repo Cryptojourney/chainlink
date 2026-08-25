@@ -71,7 +71,7 @@ plugins:
 
   capability-cron:
     - moduleURI: "github.com/smartcontractkit/capabilities/cron"
-      gitRef: "324e84d8aafef0fff4c1fd6b78a90dcd43a2b6e9"
+      gitRef: "127afb79d5b5bef542aca04b9308c787d483d3cf"
       installPath: "."
       flags: "-tags timetzdata"
 

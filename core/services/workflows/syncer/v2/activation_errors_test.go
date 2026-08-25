@@ -59,6 +59,17 @@ func Test_classifyActivationError(t *testing.T) {
 			want: ActivationNonRetryable,
 		},
 		{
+			// Verbatim from the cron capability, wrapped the way
+			// v2.Engine wraps a trigger registration failure. None of the
+			// pre-existing cron substrings match gocron's wording, so this
+			// activation was retried up to defaultMaxActivationRetries even
+			// though the schedule can never parse.
+			name: "gocron crontab parse failure is non-retryable",
+			err: fmt.Errorf("failed to register trigger %s: %w", "trigger_0",
+				errors.New("[3]InvalidArgument: failed to initialize job: gocron: CronJob: crontab parse failure\nprovided bad location moon: unknown time zone moon")),
+			want: ActivationNonRetryable,
+		},
+		{
 			name: "unknown error is retryable",
 			err:  errors.New("unexpected engine failure"),
 			want: ActivationRetryable,
